@@ -99,7 +99,7 @@ public class Main {
     }
 
     private static void saveImage(BufferedImage hdr) throws IOException {
-        File hdrFile = new File("hdr.jpg");
+        File hdrFile = new File("java-hdr.jpg");
         ImageIO.write(hdr, "jpg", hdrFile);
     }
 }
