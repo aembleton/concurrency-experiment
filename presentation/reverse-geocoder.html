@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Reverse Geocoder</title>
+
+		<meta name="author" content="Arthur Embleton">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+        
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+                <div class='footer'>
+<img src="img/engineering-logo-light.png" width="50%">                </div>
+
+<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;"></code></pre>
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section data-background="img/background.jpg">
+					<h1 style="color:#2c1717; font-size:3.5em; text-shadow: 5px 5px #CCCCCC">Reverse Geocoder</h1>
+
+                    <div style="background: rgba(255,255,255,0.8); color: #2c1717">
+						<small style="vertical-align: middle;">Arthur Embleton &bull; David Smith &bull; Ruth Hyatt &bull; Sofoklis Gialamouidis</small>
+					</div>
+
+				</section>
+
+				<section data-markdown>
+                    ## Solving?
+                    - Fast simple lookup of where a lat/long is
+                    - Offline
+                    - Portable
+					
+				</section>
+
+                <section data-markdown>
+                        ## How?
+                        - Open Street Map data
+                        - Postgres
+                        - Extract
+                        - Geohash
+                        - Optimise
+                        - Store SQL Lite DB
+                    </section>
+
+                <section data-markdown>
+                    ## Open Street Map
+                    - Available in XML and Protobuf formats
+                    - XML is easy to read, but massive
+                    - Tools such as `osm2pgsql` extract to Postgres
+                </section>
+                
+                <section data-markdown>
+                    ## Extract
+                    - We only care about administrative regions
+                    ```
+                    select l.osm_id * -1, l.name, l.admin_level, 
+                    st_astext(st_transform(l.way, 4326)) 
+                    from planet_osm_line l 
+                    where l.boundary = 'administrative' 
+                    and l.name != ''
+                    ```
+                </section>
+
+                <section data-markdown>
+                        ## Geohash
+                        - Breaks down the earth into a 36x36 grid
+                        - Represented by a-z and 0-9
+                        - 35FS is at `gcw2jpbv`
+                    </section>
+
+                    <section data-transition="fade">
+                        <h1>g</h1>
+                        <img src = "img/g.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gc</h1>
+                            <img src = "img/gc.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gcw</h1>
+                            <img src = "img/gcw.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gcw2</h1>
+                            <img src = "img/gcw2.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gcw2j</h1>
+                            <img src = "img/gcw2j.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gcw2jp</h1>
+                            <img src = "img/gcw2jp.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gcw2jpb</h1>
+                            <img src = "img/gcw2jpb.png" style="max-height:500px">
+                    </section>
+                    <section data-transition="fade">
+                            <h1>gcw2jpbv</h1>
+                            <img src = "img/gcw2jpbv.png" style="max-height:500px">
+                    </section>
+
+            
+            
+            <section data-markdown>
+                    ## Optimise
+                    - Most of England can be represented with GC* tiles
+                    - Most of Greater Manchester with GCW2*
+                </section>
+
+                <section data-markdown>
+                            ## Storage for Greater Manchester
+                            - OSM XML `326 MB`
+                            - OSM PBF `15.6 MB`
+                            - Sql Lite `24.6 KB`
+                            - Only the boroughs `12.3 KB`
+                </section>
+
+                <section>
+                    <h1>Fin</h1>
+                </section>
+
+                </div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+Reveal.addEventListener( 'customevent', function() {
+	console.log( '"customevent" has fired' );
+} );
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				backgroundTransition: 'none',
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

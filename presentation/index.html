@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Introduction to Kotlin</title>
+
+		<meta name="author" content="Arthur Embleton">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+
+		<div class="reveal">
+				<pre><code class="javascript" data-trim style="font-size: 18px;"></code></pre>
+
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1 style="color:whitesmoke; font-size:5em;">Kotlin</h1>
+
+<img src="img/kotlin-logo.png" style="border:0;box-shadow:0 0;background:none;height: 200px;">
+
+					<h3>Concurrency in Kotlin</h3>
+					<p>
+						<small><b>@arthur</b> on Slack</small>
+					</p>
+					
+
+				</section>
+
+				<section data-markdown>
+					## This talk
+					- An example concurrency Java project
+					- How to convert this to Kotlin
+
+				</section>
+
+				<section data-markdown>
+					## Java
+					- Large selection of libraries and frameworks
+					- Plenty of knowledge
+					- Excellent tooling
+					</section>
+
+					<section data-markdown>
+						## Java
+						- All non-primitive types can be null
+						- Hard to avoid mutability
+					</section>
+
+					<section data-markdown>
+						## Kotlin
+						- Fully compatable with Java
+						- Keep all of the libraries and frameworks
+						- Designed and built by JetBrains - excellent tooling
+					</section>
+
+					<section data-markdown>
+							## Google support
+							- On Android Kotlin is a first class language
+							- I would like to see it grow on the backend too
+						</section>
+
+					<section data-markdown>
+							## By default types are not null
+							```
+							//this won't compile
+							val myStr:String = null
+							```
+
+							```
+							//this will compile
+							val myStr:String? = null
+							```
+							</section>
+
+
+					<section data-markdown>
+							## Compiler enforces null checks
+							```
+							val myStr:String? = null
+							//length is Integer?
+							val length = myStr?.length
+							if (length != null) {
+								//length has now been autoboxed into Integer
+							}
+							```
+					</section>
+
+					<section data-markdown>
+						## Java if statement
+						```
+						String numberType = "";
+						if (myInt > 100) {
+							numberType = "large";
+						} else {
+							numberType = "small";
+						}
+						```
+					</section>
+
+					<section data-markdown>
+						## In Kotlin
+						```
+						val numberType = if (myInt > 100) {
+							"large"
+						} else {
+							"small"
+						}
+						```
+					</section>
+					<section data-markdown>
+						## Lets tidy that up
+						```
+						val numberType = if (myInt > 100) "large" else "small"
+						```
+					</section>
+
+					<section data-markdown>
+						## Similar in Switch statements
+						```
+						String myVal="";
+						switch(myInt) {
+							case 1:
+								myVal = "one";
+								break;
+							case 2:
+								myVal = "two";
+								break;
+						}
+						```
+					</section>
+
+					<section data-markdown>
+						## In Kotlin, they are when statments
+						```
+						val myVal = when(myInt) {
+							1 -> "one"
+							2 -> "two"
+							else -> ""
+						}
+						```
+					</section>
+
+					
+
+				<section data-markdown>
+					## Data Classes
+
+					```
+data class User(val name: String, val age: Int)
+					```
+
+					- equals(), hashCode() and toString() are all generated
+					- Constructors
+					- Copy function
+					```
+val jack = User(name = "Jack", age = 1)
+val olderJack = jack.copy(age = 2)
+					```
+				</section>
+
+				<section data-markdown>
+					## Extension Functions
+
+					```
+fun main(args: Array<String>) {
+    println("hello".bracketerise())
+}
+
+fun String.bracketerise() = "($this)"
+					```
+					Prints (hello)
+				</section>
+
+				<section data-markdown>
+					## Extension Functions
+
+					```
+fun main(args: Array<String>) {
+    println("hello".capitiliseSecondChar())
+}
+
+fun String.capitiliseSecondChar() = this.toCharArray()
+	.mapIndexed { i, c -> if (i==1) c.toUpperCase() else c}
+	.toNewString()
+
+fun List&#60;Char&#62;.toNewString() = String(this.toCharArray())
+					```
+					Prints hEllo
+				</section>
+
+				<section data-markdown>
+					## Extends existing Java Classes
+
+					```
+val userAgents = File("user-agents.txt").readLines()
+					```
+					Reads each line into a List of Strings
+				</section>
+
+				<section data-markdown>
+					## Operator overloading
+
+					```
+val radius = BigDecimal(12.34)
+val radiusSqr = radius * radius
+					```
+					- a * b maps to a.times(b)
+					- Can be implemented with operator overloading
+				</section>
+
+				<section data-markdown>
+					## Operator overloading
+
+					```
+fun main(args: Array<String>) {
+    val radius = BigDecimal(12.34)
+    val radiusSqr = radius * radius
+    val area = Math.PI * radiusSqr
+    println(area)
+}
+
+fun Double.times(bd:BigDecimal) = BigDecimal(this) * bd
+					```
+					- Need to extend Double as there is no Double * BigDecimal
+				</section>
+
+				<section data-markdown>
+					## IDE Support
+
+					- Developed by JetBrains who create IntelliJ
+					- IntelliJ has first class support for Kotlin
+					- JetBrains also develop an Eclipse plugin
+					https://github.com/JetBrains/kotlin-eclipse
+				</section>
+
+				<section data-markdown>
+						## What's missing?
+						- Hard to work with Lombok
+						- Missing the terneray operator
+						```
+						minVal = (a < b) ? a : b;
+						```
+							
+						</section>
+
+				<section data-markdown>
+					## Conclusion
+					- I hope from this you've seen the benefits of Kotlin
+					- Go and try it out
+					- There's more!
+					  - Concurency
+					  - Multi platform support (JS, native via LLVM)
+
+					</section>
+
+				<section data-markdown>
+					## Workspace
+					Search for `Kotlin`
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+Reveal.addEventListener( 'customevent', function() {
+	console.log( '"customevent" has fired' );
+} );
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				backgroundTransition: 'none',
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
