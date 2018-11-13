@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 
 public class Main {
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
+    private static final ExecutorService executor = Executors.newCachedThreadPool();
 
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
