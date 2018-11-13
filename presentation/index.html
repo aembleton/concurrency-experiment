@@ -63,42 +63,73 @@
 				</section>
 
 				<section data-markdown>
-					## Java
-					- Large selection of libraries and frameworks
-					- Plenty of knowledge
-					- Excellent tooling
+					## HDR
+					![Image](img/expected.jpg)
+					</section>
+
+
+				<section data-markdown>
+					## Take 4 base images
+					![Image](img/1.JPG)
+					![Image](img/2.JPG)
+					![Image](img/3.JPG)
+					![Image](img/4.JPG)
 					</section>
 
 					<section data-markdown>
-						## Java
-						- All non-primitive types can be null
-						- Hard to avoid mutability
+						## Naive HDR algorithm
+						1. For each pixel
+						2. Find the image with the greatest range between largest and smallest RGB values for that pixel
+						3. Use that pixel in the new composite image
 					</section>
 
 					<section data-markdown>
-						## Kotlin
-						- Fully compatable with Java
-						- Keep all of the libraries and frameworks
-						- Designed and built by JetBrains - excellent tooling
+						## Looks like this mess/art
+						![Image](img/actual.jpg)
 					</section>
 
 					<section data-markdown>
-							## Google support
-							- On Android Kotlin is a first class language
-							- I would like to see it grow on the backend too
+							## In Java
+							- Using the `ExecutorService` to create a `newCachedThreadPool`
+							- Calling `submit` returns a future
+							- Iterate over these futures, calling get on each one
 						</section>
 
 					<section data-markdown>
-							## By default types are not null
+							## In Java
 							```
-							//this won't compile
-							val myStr:String = null
-							```
+							public static Future<Pixel> calculateColour(int x, int y, int[] colours) {
+								return executor.submit(() -> {
+									int largestNumber = 0;
+									int indexWithLargestNumber = 0;
 
+									for (int i=0; i < colours.length; i++) {
+
+										int red = (new Color(colours[i])).getRed();
+										int green = (new Color(colours[i])).getGreen();
+										int blue = (new Color(colours[i])).getBlue();
+
+										int max = NumberUtils.max(red,green,blue);
+										int min = NumberUtils.min(red,green,blue);
+
+										int diff = max - min;
+
+										if (diff > largestNumber) {
+											largestNumber = diff;
+											indexWithLargestNumber = i;
+										}
+									}
+
+									return new Pixel(x, y, colours[indexWithLargestNumber]);
+								});
+							}
 							```
-							//this will compile
-							val myStr:String? = null
-							```
+						</section>
+
+					<section data-markdown>
+							## Coroutines
+							- Borrowed heavily from C# and Go
+								
 							</section>
 
 
